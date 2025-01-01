@@ -29,8 +29,7 @@ process.on('unhandledRejection', (ex) => {
 })
 
 mongoose.connect(process.env.APP_DB_URL)
-    .then(() => console.log('connected to mongodb!'))
-    .catch(err => console.log(err))
+    .then(() => winston.info('connected to mongodb!'))
 
 const app = express()
 
@@ -47,5 +46,5 @@ p.then(() => {})
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
-    console.log(`listening on port: ${port}`)
+    winston.info(`listening on port: ${port}`)
 })
