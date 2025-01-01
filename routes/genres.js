@@ -8,18 +8,18 @@ const { isValidObjectId }  = require('../utils/utils')
 const router = express.Router()
 
 // get genre list
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const genres = await genreDb.getAllGenres()
         res.send(genres)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 }) 
 
 // get a single genre
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).send('genre id is invalid!')
@@ -31,12 +31,12 @@ router.get('/:id', async (req, res) => {
         res.send(genre)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 })
 
 // add new genre
-router.post('', auth, async (req, res) => {
+router.post('', auth, async (req, res, next) => {
     try {
         const { error } = validate(req.body)
         if (error) {
@@ -46,12 +46,12 @@ router.post('', auth, async (req, res) => {
         res.send(result)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 })
 
 // edit a genere
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).send('genre id is invalid!')
@@ -67,12 +67,12 @@ router.put('/:id', auth, async (req, res) => {
         res.send(genre)
     }
     catch (err) {
-        res.send(err.message)
+        next(err)
     }
 })
 
 // delete a genre
-router.delete('/:id', [auth, admin], async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).send('genre id is invalid!')
@@ -84,7 +84,7 @@ router.delete('/:id', [auth, admin], async (req, res) => {
         res.send(genre)
     }
     catch (err) {
-        res.send(err.message)
+        next(err)
     }
 })
 

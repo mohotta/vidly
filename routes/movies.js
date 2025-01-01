@@ -9,18 +9,18 @@ const { isValidObjectId }  = require('../utils/utils')
 const router = express.Router()
 
 // get movie list
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const movies = await moviesDb.getAllMovies()
         res.send(movies)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 }) 
 
 // get a single movie
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).send('movie id is invalid!')
@@ -32,12 +32,12 @@ router.get('/:id', async (req, res) => {
         res.send(movie)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 })
 
 // add new movie
-router.post('', auth, async (req, res) => {
+router.post('', auth, async (req, res, next) => {
     try {
         const { error } = validate(req.body)
         if (error) {
@@ -57,12 +57,12 @@ router.post('', auth, async (req, res) => {
         res.send(result)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 })
 
 // edit a movie
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).send('movie id is invalid!')
@@ -78,12 +78,12 @@ router.put('/:id', auth, async (req, res) => {
         res.send(genre)
     }
     catch (err) {
-        res.send(err.message)
+        next(err)
     }
 })
 
 // delete a movie
-router.delete('/:id', [auth, admin], async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).send('movie id is invalid!')
@@ -95,7 +95,7 @@ router.delete('/:id', [auth, admin], async (req, res) => {
         res.send(genre)
     }
     catch (err) {
-        res.send(err.message)
+        next(err)
     }
 })
 

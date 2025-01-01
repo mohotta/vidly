@@ -9,18 +9,18 @@ const { isValidObjectId }  = require('../utils/utils')
 const router = express.Router()
 
 // get rental list
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const rentals = await rentalsDb.getAllRentals()
         res.send(rentals)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 }) 
 
 // get a single rental
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).send('rental id is invalid!')
@@ -32,12 +32,12 @@ router.get('/:id', async (req, res) => {
         res.send(rental)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 })
 
 // add new rental
-router.post('', auth, async (req, res) => {
+router.post('', auth, async (req, res, next) => {
     try {
         const { error } = validate(req.body)
         if (error) {
@@ -70,7 +70,7 @@ router.post('', auth, async (req, res) => {
         res.send(result)
     }
     catch (err) {
-        res.status(500).send(err.message)
+        next(err)
     }
 })
 

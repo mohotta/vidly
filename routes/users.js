@@ -8,7 +8,7 @@ const auth = require('../middleware/auth')
 
 const router = express.Router()
 
-router.get('/me', auth, async (req, res) => {
+router.get('/me', auth, async (req, res, next) => {
     try {
         const userId = req.user._id
         const user = await userDb.getUserByID(userId)
@@ -19,11 +19,11 @@ router.get('/me', auth, async (req, res) => {
         res.send(user)
     }
     catch (error) {
-        res.status(500).send(error.message)
+        next(error)
     }
 })
 
-router.post('/signin', async (req, res) => {
+router.post('/signin', async (req, res, next) => {
     try {
         const { error } = validateLogin(req.body)
         if (error) {
@@ -41,11 +41,11 @@ router.post('/signin', async (req, res) => {
         res.header('x-auth-token', user.generateAuthToken()).send('logged in!')
     }
     catch (error) {
-        res.status(500).send(error.message)
+        next(error)
     }
 }) 
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', async (req, res, next) => {
     try {
         const { error } = validateUser(req.body)
         if (error) {
@@ -63,7 +63,7 @@ router.post('/signup', async (req, res) => {
         res.header('x-auth-token', user.generateAuthToken()).send(_.pick(user, ['_id', 'name', 'email']))
     }
     catch (error) {
-        res.status(500).send(error.message)
+        next(error)
     }
 })
 
