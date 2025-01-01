@@ -74,9 +74,6 @@ router.put('/:id', auth, async (req, res) => {
 // delete a genre
 router.delete('/:id', [auth, admin], async (req, res) => {
     try {
-        if (!req.user.isAdmin) {
-            res.status(403).send('need admin permission to perform this action!')
-        }
         if (!isValidObjectId(req.params.id)) {
             return res.status(400).send('genre id is invalid!')
         }
