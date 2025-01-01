@@ -1,6 +1,8 @@
 
+const winston = require('winston')
+
 function errorHandler(err, req, res, next) {
-    // logging
+    winston.error(err.message, err)
     res.status(500).send('something went wrong!')
 }
 
