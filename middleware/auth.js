@@ -1,5 +1,5 @@
 
-require('dotenv').config()
+const config = require('config')
 const jwt = require('jsonwebtoken')
 
 function auth(req, res, next) {
@@ -9,7 +9,7 @@ function auth(req, res, next) {
         return res.status(401).send('access denied, no token provided!')
     }
     try {
-        const payload = jwt.verify(token, process.env.APP_JWT_KEY)
+        const payload = jwt.verify(token, config.get("APP_JWT_KEY"))
         req.user = payload
         next()
     }

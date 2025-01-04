@@ -3,8 +3,8 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 Joi.objctId = require('joi-objectid')(Joi)
 const winston = require('winston')
-require('winston-mongodb')
-require('dotenv').config()
+const config = require('config')
+// require('winston-mongodb')
 
 const genres = require('./routes/genres')
 const customers = require('./routes/customers')
@@ -14,8 +14,18 @@ const users = require('./routes/users')
 const errorHandler = require('./middleware/error')
 
 
+if (!config.get("APP_JWT_KEY")) {
+    console.error("FATAL ERROR: JWT private key is not defined!")
+    process.exit(1)
+}
+if (!config.get("APP_DB_URL")) {
+    console.error("FATAL ERROR: DB Url is not defined!")
+    process.exit(1)
+}
+
+winston.add(new winston.transports.Console({ color: true }))
 winston.add(new winston.transports.File({ filename: 'logfile.log' }))
-winston.add(new winston.transports.MongoDB({ db: process.env.APP_DB_URL, level: 'error' }))
+// winston.add(new winston.transports.MongoDB({ db: process.env.APP_DB_URL, level: 'error' }))
 
 process.on('uncaughtException', (ex) => {
     console.log('UNCAUGHT EXCEPTION!')
@@ -28,7 +38,7 @@ process.on('unhandledRejection', (ex) => {
     process.exit(1)
 })
 
-mongoose.connect(process.env.APP_DB_URL)
+mongoose.connect(config.get("APP_DB_URL"))
     .then(() => winston.info('connected to mongodb!'))
 
 const app = express()
@@ -44,7 +54,7 @@ app.use(errorHandler)
 p = Promise.resolve(new Error("sds"))
 p.then(() => {})
 
-const port = process.env.PORT || 3000
+const port = config.get("APP_PORT")|| 3000
 app.listen(port, () => {
     winston.info(`listening on port: ${port}`)
 })

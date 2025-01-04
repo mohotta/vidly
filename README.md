@@ -23,7 +23,13 @@ npm install
 ```
 npm install -g nodemon
 ```
-* add a `.env` file using the template and add MongoDB url/connection string and a private key for JSON web tokens
+* export application configurations as env variables.
+```
+export vidly_APP_DB_URL=<DB_URL>
+export vidly_APP_JWT_KEY=<JWT_PRIVATE_KEY>
+export vidly_APP_PORT=<PORT_NO>
+```
+&nbsp;&nbsp; Or you can use `.json` config files. [Guide](https://github.com/node-config/node-config)
 * Run the project
 ```
 node index.js
@@ -48,6 +54,7 @@ nodemon index.js
     │       ├── ...
     │       ├── ...
     │       └── ...  
+    ├── tests          # Test scripts
     ├── utils          # Utility functions
     │   └── utils.js  
     ├── index.js       # main file of the project

@@ -3,7 +3,6 @@ const Joi = require('joi')
 const { joiPasswordExtendCore } = require('joi-password');
 const joiPassword = Joi.extend(joiPasswordExtendCore);
 const jwt = require('jsonwebtoken')
-require('dotenv').config()
 
 const userSchema = new mongoose.Schema({
     name: { type: String, require: true, min: 3, max: 50 },
@@ -12,7 +11,7 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean, require: true, default: false }
 })
 userSchema.methods.generateAuthToken = function() {
-    return jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, process.env.APP_JWT_KEY)
+    return jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get("APP_JWT_KEY"))
 }
 
 const User = mongoose.model('User', userSchema)
