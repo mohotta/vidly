@@ -1,10 +1,11 @@
 const express = require('express')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
+const validateObjectId = require('../middleware/validateObjectId')
 const moviesDb = require('../services/db/movies')
 const genreDb = require('../services/db/genres')
 const { validate } = require('../models/movies')
-const { isValidObjectId }  = require('../utils/utils')
+
 
 const router = express.Router()
 
@@ -20,11 +21,8 @@ router.get('/', async (req, res, next) => {
 }) 
 
 // get a single movie
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', validateObjectId, async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('movie id is invalid!')
-        }
         const movie = await moviesDb.getMovieById(req.params.id)
         if (!movie) {
             return res.status(404).send('Movie not found!')
@@ -62,11 +60,8 @@ router.post('', auth, async (req, res, next) => {
 })
 
 // edit a movie
-router.put('/:id', auth, async (req, res, next) => {
+router.put('/:id', [auth, validateObjectId], async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('movie id is invalid!')
-        }
         const { error } = validate(req.body)
         if (error) {
             return res.status(400).send(error.details[0].message)
@@ -83,11 +78,8 @@ router.put('/:id', auth, async (req, res, next) => {
 })
 
 // delete a movie
-router.delete('/:id', [auth, admin], async (req, res, next) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('movie id is invalid!')
-        }
         const genre = await moviesDb.deleteMovie(req.params.id)
         if (!genre) {
             return res.status(404).send('genre not found!')

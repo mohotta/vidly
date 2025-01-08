@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Joi = require('joi')
+const config = require('config')
 const { joiPasswordExtendCore } = require('joi-password');
 const joiPassword = Joi.extend(joiPasswordExtendCore);
 const jwt = require('jsonwebtoken')

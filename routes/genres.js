@@ -1,9 +1,9 @@
 const express = require('express')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
+const validateObjectId = require('../middleware/validateObjectId')
 const genreDb = require('../services/db/genres')
 const { validate } = require('../models/genres')
-const { isValidObjectId }  = require('../utils/utils')
 
 const router = express.Router()
 
@@ -19,11 +19,8 @@ router.get('/', async (req, res, next) => {
 }) 
 
 // get a single genre
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', validateObjectId, async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('genre id is invalid!')
-        }
         const genre = await genreDb.getGenreById(req.params.id)
         if (!genre) {
             return res.status(404).send('genre not found!')
@@ -51,11 +48,8 @@ router.post('', auth, async (req, res, next) => {
 })
 
 // edit a genere
-router.put('/:id', auth, async (req, res, next) => {
+router.put('/:id', [auth, validateObjectId], async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('genre id is invalid!')
-        }
         const { error } = validate(req.body)
         if (error) {
             return res.status(400).send(error.details[0].message)
@@ -72,12 +66,8 @@ router.put('/:id', auth, async (req, res, next) => {
 })
 
 // delete a genre
-router.delete('/:id', [auth, admin], async (req, res, next) => {
-    try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('genre id is invalid!')
-        }
-        const genre = await genreDb.deleteGenre(req.params.id)
+router.delete('/:id', [auth, admin, validateObjectId], async (req, res, next) => {
+    try {const genre = await genreDb.deleteGenre(req.params.id)
         if (!genre) {
             return res.status(404).send('genre not found!')
         }

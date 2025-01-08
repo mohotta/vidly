@@ -1,9 +1,10 @@
 const express = require('express')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
+const validateObjectId = require('../middleware/validateObjectId')
 const customerDb = require('../services/db/customers')
 const { validate } = require('../models/customers')
-const { isValidObjectId }  = require('../utils/utils')
+
 
 const router = express.Router()
 
@@ -17,11 +18,8 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', validateObjectId, async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('customer id is invalid!')
-        }
         const customer = customerDb.getCustomerByID(req.params.id)
         if (!customer) {
             return res.status(404).send('customer not found!')
@@ -47,11 +45,8 @@ router.post('/', auth, async (req, res, next) => {
     }
 })
 
-router.put('/:id', auth, async (req, res, next) => {
+router.put('/:id', [auth, validateObjectId], async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('customer id is invalid!')
-        }
         const { error } = validate(req.body)
         if (error) {
             return res.status(400).send(error.details[0].message)
@@ -67,11 +62,8 @@ router.put('/:id', auth, async (req, res, next) => {
     }
 })
 
-router.delete('/:id', [auth, admin], async (req, res, next) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('customer id is invalid!')
-        }
         const customer = await customerDb.deleteCustomer(req.params.id)
         if (!customer) {
             return res.status(404).send('genre not found!')

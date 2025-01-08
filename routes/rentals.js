@@ -1,10 +1,11 @@
 const express = require('express')
 const auth = require('../middleware/auth')
+const validateObjectId = require('../middleware/validateObjectId')
 const rentalsDb = require('../services/db/rentals')
 const customerDb = require('../services/db/customers')
 const moviesdB = require('../services/db/movies')
 const { validate } = require('../models/rentals')
-const { isValidObjectId }  = require('../utils/utils')
+
 
 const router = express.Router()
 
@@ -20,11 +21,8 @@ router.get('/', async (req, res, next) => {
 }) 
 
 // get a single rental
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', validateObjectId, async (req, res, next) => {
     try {
-        if (!isValidObjectId(req.params.id)) {
-            return res.status(400).send('rental id is invalid!')
-        }
         const rental = await rentalsDb.getRentalById(req.params.id)
         if (!rental) {
             return res.status(404).send('genre not found!')
