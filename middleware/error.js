@@ -1,4 +1,3 @@
-
 const winston = require('winston')
 
 function errorHandler(err, req, res, next) {

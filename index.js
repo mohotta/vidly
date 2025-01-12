@@ -55,6 +55,8 @@ p = Promise.resolve(new Error("sds"))
 p.then(() => {})
 
 const port = config.get("APP_PORT")|| 3000
-app.listen(port, () => {
+const server = app.listen(port, () => {
     winston.info(`listening on port: ${port}`)
 })
+
+module.exports = server

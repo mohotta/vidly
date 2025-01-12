@@ -1,5 +1,5 @@
-require('dotenv').config()
 const { User } = require('../../../models/users')
+const config = require('config')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 
@@ -11,7 +11,7 @@ describe('user.generateAuthToken', () => {
             isAdmin: true
         })
         const token = user.generateAuthToken()
-        const payload = jwt.verify(token, process.env.APP_JWT_KEY)
+        const payload = jwt.verify(token, config.get("APP_JWT_KEY"))
         expect(payload).toMatchObject({ _id: id, isAdmin: true })
     })
 })
