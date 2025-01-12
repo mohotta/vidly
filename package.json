@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --verbose --maxWorkers=1  --forceExit"
+    "test": "jest --verbose --maxWorkers=1  --forceExit --coverage"
   },
   "keywords": [],
   "author": "",
