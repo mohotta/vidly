@@ -1,5 +1,4 @@
 {
     "APP_DB_URL": "vidly_APP_DB_URL",
-    "APP_JWT_KEY": "vidly_APP_JWT_KEY",
-    "APP_PORT": "vidly_APP_PORT"
+    "APP_JWT_KEY": "vidly_APP_JWT_KEY"
 }

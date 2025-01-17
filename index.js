@@ -4,6 +4,9 @@ const Joi = require('joi')
 Joi.objectId = require('joi-objectid')(Joi)
 const winston = require('winston')
 const config = require('config')
+const helmet = require('helmet')
+const compression = require('compression')
+
 // require('winston-mongodb')
 
 const genres = require('./routes/genres')
@@ -52,6 +55,8 @@ app.use('/api/rentals', rentals)
 app.use('/api/users', users)
 app.use('/api/returns', returns)
 app.use(errorHandler)
+app.use(helmet)
+app.use(compression)
 
 p = Promise.resolve(new Error("sds"))
 p.then(() => {})
