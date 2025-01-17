@@ -13,7 +13,7 @@ const Movie = mongoose.model('Movie', movieSchema)
 function validateMovie(movie) {
     schema = Joi.object({
         title: Joi.string().min(3).required(),
-        genreId: Joi.objectId().required().message({
+        genreId: Joi.objectId().required().messages({
             "string.pattern.base": `"" is a invalid genre id`
         }),
         numberInStock: Joi.number().min(0).max(255).required(),

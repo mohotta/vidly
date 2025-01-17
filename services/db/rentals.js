@@ -16,16 +16,33 @@ async function addNewRental(rentalObj) {
     let rental = new Rental(rentalObj)
     // update movies object and save rental
     // TODO: in a atomic transaction
-    rental.save()
+    await rental.save()
     const movie = await Movie.findById(rental.movie._id)
     movie.numberInStock--
     await movie.save()
     return rental
 }
 
+async function returnRental(rentalObj) {
+    const rental = await Rental.findByIdAndUpdate(rentalObj._id, rentalObj, { new: true })
+    const movie = await Movie.findById(rental.movie._id)
+    movie.numberInStock++
+    await movie.save()
+    return rental
+}
+
+async function getRentalsByMovieAndCustomer(movieId, customerId) {
+    return await Rental.find({ 
+        "customer._id": customerId, 
+        "movie._id": movieId 
+    });
+}
+
 module.exports = {
     getAllRentals: getAllRentals,
     getRentalById: getRentalById,
+    returnRental: returnRental,
     addNewRental: addNewRental,
+    getRentalsByMovieAndCustomer: getRentalsByMovieAndCustomer,
 }
  
