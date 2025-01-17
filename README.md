@@ -72,7 +72,6 @@ nodemon index.js
     │       ├── ...
     │       └── ...  
     ├── index.js       # main file of the project
-    ├── .env.template  # .env file template
     ├── .gitignore
     ├── package.json
     ├── package-lock.json
